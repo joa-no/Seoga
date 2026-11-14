@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/icon.jpg" alt="Seoga app icon" width="120" height="120">
+
 # Seoga
 
 **Your personal manga and comics library, organized your way.**
