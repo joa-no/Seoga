@@ -21,16 +21,6 @@ O Seoga **não é um leitor**: ele não baixa nem exibe páginas. É um catálog
 
 Kotlin, Jetpack Compose, Material 3, arquitetura MVVM e Room (SQLite).
 
-## Como compilar
-
-1. Instale o [Android Studio](https://developer.android.com/studio).
-2. Abra a pasta do projeto com **Open** e aguarde o Gradle sincronizar.
-3. Rode no emulador ou em um aparelho Android.
-
-## APK pronto
-
-Os APKs ficam na aba **Releases** do repositório, e não dentro do código.
-
 ## Licença e créditos
 
 Distribuído sob a licença [MIT](LICENSE). Ao copiar, modificar ou fazer um fork deste projeto, mantenha o aviso de copyright e indique a origem e o criador original: **joa-no**.
