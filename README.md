@@ -8,7 +8,9 @@
 
 An offline-first Android catalog for manga, manhwa, manhua, and comics. Track chapters, rate your favorites, and organize your collection — without an account.
 
-[Features](#features) · [Screenshots](#screenshots) · [Technology](#technology) · [Getting started](#getting-started)
+[**Download Seoga for Android (APK)**](https://github.com/joa-no/Seoga/releases/download/v1.0/Seoga.apk) · [v1.0 release](https://github.com/joa-no/Seoga/releases/tag/v1.0)
+
+[Features](#features) · [Screenshots](#screenshots) · [Installation](#installation) · [Building](#building-from-source) · [Release notes](CHANGELOG.md)
 
 </div>
 
@@ -45,11 +47,31 @@ The screenshots below show the Android interface in dark mode.
 - **Local database:** Room (SQLite)
 - **Metadata providers:** MangaDex and AniList
 
-## Getting started
+## Installation
 
-Download the source code from this repository and open the Android project in a compatible Android development environment.
+**Android 7.0 or later** (API level 24+).
 
-For prebuilt packages, check the [Releases](https://github.com/joa-no/Seoga/releases) page if a release is available.
+1. [Download the Seoga v1.0 APK](https://github.com/joa-no/Seoga/releases/download/v1.0/Seoga.apk) from the [official GitHub release](https://github.com/joa-no/Seoga/releases/tag/v1.0).
+2. Open the downloaded APK on your Android device.
+3. If prompted, allow installation from your browser or file manager, then complete the on-screen installation steps. Only install APKs from sources you trust.
+
+No sign-in is required. You can add works manually without an internet connection; metadata search requires internet access.
+
+## Building from source
+
+Open the project in Android Studio with a compatible Android SDK and JDK (Java 17 or newer). Alternatively, use the included Gradle Wrapper:
+
+```bash
+./gradlew assembleDebug
+```
+
+On Windows, use `gradlew.bat assembleDebug` instead. The wrapper downloads the project's configured Gradle version automatically.
+
+**Debug signing note:** The current project configuration expects a local `debug.keystore` at the repository root (alias `androiddebugkey`, store/key passwords `android`). This file is deliberately excluded from version control, so you must provide your own debug key when building locally.
+
+## Release notes
+
+See the [v1.0 changelog](CHANGELOG.md) and the [release page](https://github.com/joa-no/Seoga/releases/tag/v1.0).
 
 ## Privacy and data
 
