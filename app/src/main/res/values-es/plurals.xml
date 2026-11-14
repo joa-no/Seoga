@@ -1,0 +1,30 @@
+<resources>
+    <plurals name="works_count">
+        <item quantity="one">%d obra</item>
+        <item quantity="other">%d obras</item>
+    </plurals>
+    <plurals name="selection_count">
+        <item quantity="one">%d seleccionada</item>
+        <item quantity="other">%d seleccionadas</item>
+    </plurals>
+    <plurals name="works_added_to_collection">
+        <item quantity="one">%1$d obra añadida a %2$s</item>
+        <item quantity="other">%1$d obras añadidas a %2$s</item>
+    </plurals>
+    <plurals name="works_moved_to_collection">
+        <item quantity="one">%1$d obra movida a %2$s</item>
+        <item quantity="other">%1$d obras movidas a %2$s</item>
+    </plurals>
+    <plurals name="delete_works_confirm_title">
+        <item quantity="one">¿Eliminar %d obra?</item>
+        <item quantity="other">¿Eliminar %d obras?</item>
+    </plurals>
+    <plurals name="delete_works_confirm_message">
+        <item quantity="one">¿Estás seguro de que deseas eliminar %d obra de tu biblioteca? Esta acción no se puede deshacer y también elimina las asociaciones con todas las colecciones.</item>
+        <item quantity="other">¿Estás seguro de que deseas eliminar %d obras de tu biblioteca? Esta acción no se puede deshacer y también elimina las asociaciones con todas las colecciones.</item>
+    </plurals>
+    <plurals name="delete_all_library_confirm_message">
+        <item quantity="one">Esto eliminará la única obra de tu biblioteca. Esta acción no se puede deshacer.</item>
+        <item quantity="other">Esto eliminará todas las %d obras de tu biblioteca. Esta ação no se puede deshacer.</item>
+    </plurals>
+</resources>

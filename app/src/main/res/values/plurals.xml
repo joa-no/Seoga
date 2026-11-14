@@ -1,0 +1,30 @@
+<resources>
+    <plurals name="works_count">
+        <item quantity="one">%d work</item>
+        <item quantity="other">%d works</item>
+    </plurals>
+    <plurals name="selection_count">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <plurals name="works_added_to_collection">
+        <item quantity="one">%1$d work added to %2$s</item>
+        <item quantity="other">%1$d works added to %2$s</item>
+    </plurals>
+    <plurals name="works_moved_to_collection">
+        <item quantity="one">%1$d work moved to %2$s</item>
+        <item quantity="other">%1$d works moved to %2$s</item>
+    </plurals>
+    <plurals name="delete_works_confirm_title">
+        <item quantity="one">Delete %d work?</item>
+        <item quantity="other">Delete %d works?</item>
+    </plurals>
+    <plurals name="delete_works_confirm_message">
+        <item quantity="one">Are you sure you want to remove %d work from your library? This action cannot be undone and also removes associations with all collections.</item>
+        <item quantity="other">Are you sure you want to remove %d works from your library? This action cannot be undone and also removes associations with all collections.</item>
+    </plurals>
+    <plurals name="delete_all_library_confirm_message">
+        <item quantity="one">This will delete the only work in your library. This action cannot be undone.</item>
+        <item quantity="other">This will delete all %d works in your library. This action cannot be undone.</item>
+    </plurals>
+</resources>

@@ -1,0 +1,209 @@
+<resources>
+    <string name="app_name">Seoga</string>
+
+    <!-- Navigation -->
+    <string name="nav_library">Library</string>
+    <string name="nav_add">Add</string>
+    <string name="nav_collections">Collections</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Top Bar & Titles -->
+    <string name="library_title">My Library</string>
+    <string name="collections_title">Collections</string>
+    <string name="add_work_title">Add Work</string>
+    <string name="edit_work_title">Edit Work</string>
+    <string name="search_sources_title">Online Search</string>
+    <string name="settings_title">Settings</string>
+
+    <!-- Work Types -->
+    <string name="type_all">All</string>
+    <string name="type_manga">Manga</string>
+    <string name="type_manhwa">Manhwa</string>
+    <string name="type_manhua">Manhua</string>
+    <string name="type_comic">Comic</string>
+
+    <!-- Library Screen -->
+    <string name="tab_all">All</string>
+    <string name="search_library_hint">Search by title, author, genre...</string>
+    <string name="filter_and_sort">Filter &amp; Sort</string>
+    <string name="filter_by_type">Filter by Type</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_recent">Recently Updated</string>
+    <string name="sort_title_asc">Title (A-Z)</string>
+    <string name="sort_rating">Highest Rating</string>
+    <string name="sort_progress">Most Read</string>
+    <string name="empty_library_title">Your library is empty</string>
+    <string name="empty_library_subtitle">Tap + to add your first work or search online.</string>
+    <string name="empty_collection_title">No works in this collection</string>
+    <string name="empty_collection_subtitle">Edit works to assign them to this collection.</string>
+    <string name="empty_search_title">No works found</string>
+    <string name="empty_search_subtitle">Try searching for a different term or clearing filters.</string>
+    <string name="clear_filters">Clear Filters</string>
+    <string name="chapter_progress_display">Ch. %1$d / %2$s</string>
+    <string name="chapter_single_display">Ch. %1$d</string>
+    <string name="quick_increment_desc">Read next chapter</string>
+    <string name="toggle_view_mode">Change view layout</string>
+
+    <!-- Collections Screen -->
+    <string name="new_collection">New Collection</string>
+    <string name="create_collection_title">Create Collection</string>
+    <string name="edit_collection_title">Rename Collection</string>
+    <string name="delete_collection_title">Delete Collection</string>
+    <string name="delete_collection_message">Are you sure you want to delete \"%1$s\"? Works will remain in your library.</string>
+    <string name="collection_name_label">Collection Name</string>
+    <string name="collection_name_hint">e.g., Reading, Favorites, Plan to Read</string>
+    <string name="empty_collections_title">No custom collections</string>
+    <string name="empty_collections_subtitle">Create custom collections to organize your works your way.</string>
+
+    <!-- Detail Screen -->
+    <string name="authors_label">Authors: %1$s</string>
+    <string name="artists_label">Art: %1$s</string>
+    <string name="source_badge">Source: %1$s</string>
+    <string name="reading_progress_title">Reading Progress</string>
+    <string name="slider_chapter_label">Chapter %1$d</string>
+    <string name="btn_decrement_chapter">Decrease chapter</string>
+    <string name="btn_increment_chapter">Increase chapter</string>
+    <string name="btn_edit_chapter_direct">Edit chapter number</string>
+    <string name="collections_section_title">Collections</string>
+    <string name="manage_collections_btn">Manage</string>
+    <string name="synopsis_section_title">Synopsis</string>
+    <string name="personal_notes_section_title">Personal Notes</string>
+    <string name="genres_section_title">Genres</string>
+    <string name="edit_work_btn">Edit Work</string>
+    <string name="delete_work_btn">Delete</string>
+    <string name="delete_work_confirm_title">Delete Work</string>
+    <string name="delete_work_confirm_message">Are you sure you want to remove \"%1$s\" from your library? This action will also remove associations with all collections.</string>
+    <string name="source_limit_title">Limit from %1$s</string>
+    <string name="source_limit_message">This total (%1$d chapters) came from %2$s. Would you like to release the limit for this work and save chapter %3$d?</string>
+    <string name="release_limit">Release Limit</string>
+    <string name="edit_chapter_dialog_title">Current Chapter Read</string>
+    <string name="edit_chapter_dialog_label">Chapter number</string>
+    <string name="manual_total_exceeded_warning">Chapter cannot exceed total (%1$d). Increase total in Edit to continue.</string>
+    <string name="read_exceeds_total_error">Read cannot be greater than total (%1$d)</string>
+    <string name="no_collections_assigned">No collections assigned yet.</string>
+    <string name="no_synopsis_available">No synopsis provided.</string>
+    <string name="no_notes_available">No personal notes yet.</string>
+    <string name="manage_collections_dialog_title">Manage Collections</string>
+    <string name="no_collections_created_yet">You haven\'t created any custom collections yet.</string>
+
+    <!-- Form Screen -->
+    <string name="manual_entry_prompt">Or enter data manually</string>
+    <string name="change_cover">Change Cover</string>
+    <string name="add_cover">Add Cover</string>
+    <string name="remove_cover">Remove</string>
+    <string name="title_label">Work Title *</string>
+    <string name="title_required_error">Title is required</string>
+    <string name="authors_field_label">Authors</string>
+    <string name="artists_field_label">Artists</string>
+    <string name="type_field_label">Work Type</string>
+    <string name="genres_field_label">Genres</string>
+    <string name="add_genre_hint">Add genre (e.g., Action, Adventure)</string>
+    <string name="add_genre_button">Add genre</string>
+    <string name="chapters_read_label">Read</string>
+    <string name="total_chapters_label">Total (optional)</string>
+    <string name="limit_to_source_total">Limit to %1$s total</string>
+    <string name="limit_source_active">Active: progress cannot exceed the API total</string>
+    <string name="limit_source_released">Released: you can register chapters beyond the total</string>
+    <string name="source_limit_save_message">The read chapters (%3$s) exceed the %2$s total (%1$s). Do you want to release the limit and save?</string>
+    <string name="synopsis_field_label">Synopsis</string>
+    <string name="personal_notes_field_label">Personal Notes</string>
+    <string name="rating_field_label">Rating</string>
+    <string name="collections_field_label">Assign to Collections</string>
+    <string name="save_work_btn">Save Work</string>
+    <string name="saving">Saving...</string>
+    <string name="change_source_total_title">Total Origin (%1$s)</string>
+    <string name="change_source_total_message">This total (%1$s) was imported from %2$s. Modifying it will convert it to a manual total and remove automatic limits. Proceed?</string>
+    <string name="change_to_manual_btn">Change to Manual</string>
+
+    <!-- Search Screen -->
+    <string name="search_sources_hint">Search MangaDex and AniList...</string>
+    <string name="manual_entry_card_title">Enter data manually</string>
+    <string name="manual_entry_card_subtitle">Add title, cover, and progress without online search</string>
+    <string name="search_disabled_title">Online search is disabled</string>
+    <string name="search_disabled_subtitle">Enable MangaDex or AniList in Settings to search works online.</string>
+    <string name="enable_in_settings">Open Settings</string>
+    <string name="search_start_hint">Type at least 2 characters to search</string>
+    <string name="searching_sources">Searching sources...</string>
+    <string name="no_results_title">No works found</string>
+    <string name="no_results_subtitle">Try another title or register manually</string>
+    <string name="search_all_failed">Could not connect to external sources (%1$s). Check your connection.</string>
+    <string name="search_partial_failure">Note: %1$s failed to respond. Showing available results.</string>
+    <string name="badge_18_plus">18+</string>
+
+    <!-- Settings Screen -->
+    <string name="statistics_title">Statistics</string>
+    <string name="stat_works">Works</string>
+    <string name="stat_chapters_read">Chapters Read</string>
+    <string name="stat_collections">Collections</string>
+    <string name="external_integration_title">External Integration</string>
+    <string name="mangadex_toggle_title">MangaDex Search</string>
+    <string name="mangadex_toggle_desc">Search titles, covers, and details on MangaDex.</string>
+    <string name="anilist_toggle_title">AniList Search</string>
+    <string name="anilist_toggle_desc">Search titles, covers, and details on AniList via GraphQL.</string>
+    <string name="adult_content_toggle_title">Include adult content (18+)</string>
+    <string name="adult_content_toggle_desc">Shows works classified as erotica or pornographic in search results.</string>
+    <string name="adult_dialog_title">Age Confirmation</string>
+    <string name="adult_dialog_message">I confirm that I am 18 years of age or older.</string>
+    <string name="adult_dialog_confirm">Confirm</string>
+    <string name="appearance_title">Appearance</string>
+    <string name="theme_title">App Theme</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_system">System</string>
+    <string name="language_section_title">Language</string>
+    <string name="language_auto">Automatic</string>
+    <string name="language_pt">Português (Brasil)</string>
+    <string name="language_es">Español</string>
+    <string name="language_en">English</string>
+    <string name="backup_title">Backup &amp; Data</string>
+    <string name="backup_export_restore_title">Export and Restore</string>
+    <string name="backup_desc">Generate a full ZIP backup with all your works, collections, metadata, progress, and local covers to transfer to another device or keep as a safe copy.</string>
+    <string name="btn_export_zip">Export ZIP</string>
+    <string name="btn_restore_zip">Restore</string>
+    <string name="backup_export_success">Backup exported successfully!</string>
+    <string name="backup_export_error">Failed to export backup.</string>
+    <string name="backup_restore_success">Restored %1$d works and %2$d collections successfully!</string>
+    <string name="backup_restore_error">Failed to restore backup.</string>
+    <string name="about_title">About</string>
+    <string name="about_app_name">Seoga</string>
+    <string name="about_version">Version %1$s • Local-First Android</string>
+    <string name="about_developer">Developed by joa-no</string>
+    <string name="about_description">• Application developed with Kotlin, Jetpack Compose, and Room SQLite.\n• Exclusively for personal cataloging, organization, and reading tracking.\n• This is not a comic reader and does not download or stream content.\n• Optional metadata queries provided by free public APIs from MangaDex and AniList.</string>
+
+    <!-- Common Dialogs & Actions -->
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="done">Done</string>
+    <string name="all">All</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+
+    <!-- Selection & Collections Actions -->
+    <string name="action_select_all">Select all</string>
+    <string name="action_manage_collections">Manage collections…</string>
+    <string name="action_add_to_collection">Add to collection…</string>
+    <string name="action_move_to_collection">Move to…</string>
+    <string name="sheet_add_to_collection_title">Add to Collection</string>
+    <string name="sheet_move_to_collection_title">Move to Collection</string>
+    <string name="empty_collections_sheet_msg">No collections found. Create a collection in the Collections tab to organize your works.</string>
+    <string name="empty_move_collections_sheet_msg">No other collections available to move to.</string>
+    <string name="work_must_belong_to_collection">A work must be in \"%1$s\" or in at least one collection.</string>
+    <string name="adult_content_label">Adult content (+18)</string>
+    <string name="badge_adult">+18</string>
+    <string name="status_completed">Completed</string>
+
+    <!-- Rating Section & Dialog -->
+    <string name="no_rating">No rating</string>
+    <string name="rating_dialog_title">Your rating</string>
+    <string name="rating_dialog_label">Rating from 0 to 10</string>
+    <string name="remove_rating_btn">Remove rating</string>
+    <string name="rating_range_error">The rating must be between 0 and 10.</string>
+    <string name="btn_decrement_rating">Decrease 0.1</string>
+    <string name="btn_increment_rating">Increase 0.1</string>
+    <string name="delete_works_collection_note">They will be removed from the entire library, not just this collection.</string>
+    <string name="delete_all_library_confirm_title">Delete entire library?</string>
+</resources>

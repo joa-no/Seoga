@@ -1,0 +1,6 @@
+{
+  "name": "Seoga",
+  "description": "Biblioteca pessoal para catalogação de mangás, manhwas e HQs com coleções personalizadas e busca no MangaDex.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
