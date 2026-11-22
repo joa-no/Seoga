@@ -533,4 +533,40 @@ class DatabaseTest {
         assertEquals(listOf(colBId), work3Fetched.collections.map { it.id })
         assertEquals(1, workDao.getTotalWorksCount().first())
     }
+
+    @Test
+    fun testCollectionChangeRollsBackOnInvalidReference() = runBlocking {
+        val dao = db.workDao()
+        val collectionId = db.collectionDao().insertCollection(CollectionEntity(name = "Original", orderPosition = 0))
+        val id = dao.saveWithCollections(WorkEntity(title = "Original", type = "Mangá"), listOf(collectionId))
+        val original = dao.getWorkById(id).first()!!
+        val failure = runCatching {
+            dao.saveWithCollections(original.copy(title = "Changed"), listOf(Long.MAX_VALUE))
+        }
+        assertTrue("Invalid foreign key must fail", failure.isFailure)
+        assertEquals("Original", dao.getWorkById(id).first()!!.title)
+        assertEquals(listOf(collectionId), dao.getCollectionIdsForWork(id))
+    }
+
+    @Test
+    fun testSafeHiddenUsesRealDao() = runBlocking {
+        val dao = db.workDao()
+        val id = dao.saveWithCollections(WorkEntity(title = "Solo", type = "Mangá"), emptyList())
+        dao.setSafeHidden(id, true)
+        assertFalse(dao.getWorkById(id).first()!!.hiddenFromAll)
+    }
+
+    @Test
+    fun testBackupRejectsUnsafeCoverPath() = runBlocking {
+        val bytes = java.io.ByteArrayOutputStream()
+        java.util.zip.ZipOutputStream(bytes).use { zip ->
+            zip.putNextEntry(java.util.zip.ZipEntry("covers/../unsafe-test-file"))
+            zip.write(byteArrayOf(1, 2, 3))
+            zip.closeEntry()
+        }
+        val result = com.joano.seoga.data.backup.BackupManager(context)
+            .restoreBackup(java.io.ByteArrayInputStream(bytes.toByteArray()), false)
+        assertTrue(result.isFailure)
+        assertFalse(java.io.File(context.filesDir, "unsafe-test-file").exists())
+    }
 }
