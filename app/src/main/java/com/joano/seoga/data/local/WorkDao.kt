@@ -12,6 +12,45 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WorkDao {
 
+    @Transaction
+    suspend fun saveWithCollections(work: WorkEntity, collectionIds: List<Long>): Long {
+        val safeWork = if (collectionIds.isEmpty()) work.copy(hiddenFromAll = false) else work
+        val id = if (safeWork.id == 0L) insertWork(safeWork) else {
+            updateWork(safeWork)
+            safeWork.id
+        }
+        setCollections(id, collectionIds, safeWork.hiddenFromAll)
+        return id
+    }
+
+    @Transaction
+    suspend fun setCollections(workId: Long, collectionIds: List<Long>, hidden: Boolean?) {
+        deleteCrossRefsForWork(workId)
+        if (collectionIds.isNotEmpty()) {
+            insertCrossRefs(collectionIds.map { WorkCollectionCrossRef(workId, it) })
+        }
+        if (collectionIds.isEmpty()) updateHiddenFromAll(workId, false)
+        else if (hidden != null) updateHiddenFromAll(workId, hidden)
+    }
+
+    @Transaction
+    suspend fun moveFromAll(workIds: List<Long>, collectionId: Long) {
+        addWorksToCollection(workIds, collectionId)
+        updateHiddenFromAllForWorks(workIds, true)
+    }
+
+    @Transaction
+    suspend fun moveToAll(workIds: List<Long>, collectionId: Long) {
+        deleteCrossRefsForWorks(workIds, collectionId)
+        updateHiddenFromAllForWorks(workIds, false)
+    }
+
+    @Transaction
+    suspend fun setSafeHidden(workId: Long, hidden: Boolean) {
+        updateHiddenFromAll(workId, hidden && getCollectionIdsForWork(workId).isNotEmpty())
+    }
+
+
     @Query("SELECT * FROM works ORDER BY updatedAt DESC")
     fun getAllWorks(): Flow<List<WorkEntity>>
 
