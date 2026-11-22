@@ -6,7 +6,6 @@ import com.joano.seoga.data.local.AppDatabase
 import com.joano.seoga.data.local.CollectionDao
 import com.joano.seoga.data.local.CollectionEntity
 import com.joano.seoga.data.local.CollectionWithCount
-import com.joano.seoga.data.local.WorkCollectionCrossRef
 import com.joano.seoga.data.local.WorkDao
 import com.joano.seoga.data.local.WorkEntity
 import com.joano.seoga.data.local.WorkWithCollections
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.net.URL
 import java.util.UUID
 
@@ -44,27 +42,7 @@ class LibraryRepository(
     }
 
     suspend fun saveWork(work: WorkEntity, collectionIds: List<Long>): Long = withContext(Dispatchers.IO) {
-        // Safety rule: if no other collections, work cannot be hiddenFromAll
-        val safeHidden = if (collectionIds.isEmpty()) false else work.hiddenFromAll
-        val safeWork = if (safeHidden != work.hiddenFromAll) work.copy(hiddenFromAll = safeHidden) else work
-
-        val workId = if (safeWork.id == 0L) {
-            workDao.insertWork(safeWork)
-        } else {
-            workDao.updateWork(safeWork)
-            safeWork.id
-        }
-
-        // Update collection associations
-        workDao.deleteCrossRefsForWork(workId)
-        if (collectionIds.isNotEmpty()) {
-            val refs = collectionIds.map { colId ->
-                WorkCollectionCrossRef(workId = workId, collectionId = colId)
-            }
-            workDao.insertCrossRefs(refs)
-        }
-
-        workId
+        workDao.saveWithCollections(work, collectionIds)
     }
 
     suspend fun updateProgress(workId: Long, chaptersRead: Int) = withContext(Dispatchers.IO) {
@@ -92,8 +70,7 @@ class LibraryRepository(
     }
 
     suspend fun deleteWork(workId: Long) = withContext(Dispatchers.IO) {
-        workDao.deleteCrossRefsForWork(workId)
-        workDao.deleteWorkById(workId)
+        workDao.deleteWorks(listOf(workId))
     }
 
     suspend fun deleteWorks(workIds: List<Long>) = withContext(Dispatchers.IO) {
@@ -133,25 +110,11 @@ class LibraryRepository(
     }
 
     suspend fun setWorkCollections(workId: Long, collectionIds: List<Long>, hiddenFromAll: Boolean? = null) = withContext(Dispatchers.IO) {
-        workDao.deleteCrossRefsForWork(workId)
-        if (collectionIds.isNotEmpty()) {
-            val refs = collectionIds.map { colId ->
-                WorkCollectionCrossRef(workId = workId, collectionId = colId)
-            }
-            workDao.insertCrossRefs(refs)
-        }
-        if (collectionIds.isEmpty()) {
-            // Safety rule: if no collections, cannot be hidden from Todos
-            workDao.updateHiddenFromAll(workId, false)
-        } else if (hiddenFromAll != null) {
-            workDao.updateHiddenFromAll(workId, hiddenFromAll)
-        }
+        workDao.setCollections(workId, collectionIds, hiddenFromAll)
     }
 
     suspend fun setWorkHiddenFromAll(workId: Long, hidden: Boolean) = withContext(Dispatchers.IO) {
-        val colIds = workDao.getCollectionIdsForWork(workId)
-        val safeHidden = if (colIds.isEmpty()) false else hidden
-        workDao.updateHiddenFromAll(workId, safeHidden)
+        workDao.setSafeHidden(workId, hidden)
     }
 
     suspend fun addWorksToCollection(workIds: List<Long>, collectionId: Long) = withContext(Dispatchers.IO) {
@@ -166,8 +129,7 @@ class LibraryRepository(
 
     suspend fun moveWorksFromAllToCollection(workIds: List<Long>, toCollectionId: Long) = withContext(Dispatchers.IO) {
         if (workIds.isEmpty()) return@withContext
-        workDao.addWorksToCollection(workIds, toCollectionId)
-        workDao.updateHiddenFromAllForWorks(workIds, true)
+        workDao.moveFromAll(workIds, toCollectionId)
     }
 
     suspend fun addWorksToAll(workIds: List<Long>) = withContext(Dispatchers.IO) {
@@ -177,8 +139,7 @@ class LibraryRepository(
 
     suspend fun moveWorksToAll(workIds: List<Long>, fromCollectionId: Long) = withContext(Dispatchers.IO) {
         if (workIds.isEmpty()) return@withContext
-        workDao.deleteCrossRefsForWorks(workIds, fromCollectionId)
-        workDao.updateHiddenFromAllForWorks(workIds, false)
+        workDao.moveToAll(workIds, fromCollectionId)
     }
 
     suspend fun applyBatchCollectionChanges(
