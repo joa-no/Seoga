@@ -1,7 +1,8 @@
 package com.joano.seoga.data.backup
 
 import android.content.Context
-import android.net.Uri
+import androidx.room.withTransaction
+import java.util.UUID
 import com.joano.seoga.data.local.AppDatabase
 import com.joano.seoga.data.local.CollectionEntity
 import com.joano.seoga.data.local.WorkCollectionCrossRef
@@ -156,7 +157,7 @@ class BackupManager(private val context: Context) {
             val allCustomName = currentSettings?.allCollectionName ?: ""
 
             val manifest = BackupManifest(
-                version = 3,
+                version = 4,
                 allCollectionName = allCustomName,
                 works = backupWorks,
                 collections = backupCollections,
@@ -173,7 +174,7 @@ class BackupManager(private val context: Context) {
                 zipOut.closeEntry()
 
                 // Write covers
-                for (file in filesToInclude) {
+                for (file in filesToInclude.distinctBy { it.name }) {
                     val entry = ZipEntry("covers/${file.name}")
                     zipOut.putNextEntry(entry)
                     FileInputStream(file).use { inStream ->
@@ -225,35 +226,34 @@ class BackupManager(private val context: Context) {
         inputStream: InputStream,
         replaceExisting: Boolean
     ): Result<Int> = withContext(Dispatchers.IO) {
+        val newCovers = mutableListOf<File>()
+        var committed = false
         try {
             var manifestJson: String? = null
             val coversDir = File(context.filesDir, "covers").apply { mkdirs() }
             val extractedCovers = mutableMapOf<String, String>() // coverFileName -> newAbsolutePath
 
-            // Unpack ZIP
-            val tempZipFile = File(context.cacheDir, "temp_restore_${System.currentTimeMillis()}.zip")
-            FileOutputStream(tempZipFile).use { out ->
-                inputStream.copyTo(out)
-            }
-
-            ZipInputStream(BufferedInputStream(FileInputStream(tempZipFile))).use { zipIn ->
+            // Extract only flat cover filenames, using fresh names to avoid overwriting live data.
+            ZipInputStream(BufferedInputStream(inputStream)).use { zipIn ->
                 var entry: ZipEntry? = zipIn.nextEntry
                 while (entry != null) {
                     if (entry.name == "library_backup.json") {
+                        require(manifestJson == null) { "Duplicate backup manifest" }
                         manifestJson = zipIn.bufferedReader(Charsets.UTF_8).readText()
                     } else if (entry.name.startsWith("covers/") && !entry.isDirectory) {
                         val fileName = entry.name.removePrefix("covers/")
-                        val destFile = File(coversDir, fileName)
-                        FileOutputStream(destFile).use { out ->
-                            zipIn.copyTo(out)
-                        }
+                        require(fileName.isNotBlank() && fileName != "." && fileName != ".." &&
+                            !fileName.contains('/') && !fileName.contains('\\') &&
+                            !extractedCovers.containsKey(fileName)) { "Invalid cover filename" }
+                        val destFile = File(coversDir, "cover_${UUID.randomUUID()}.jpg")
+                        newCovers.add(destFile)
+                        FileOutputStream(destFile).use { out -> zipIn.copyTo(out) }
                         extractedCovers[fileName] = destFile.absolutePath
                     }
                     zipIn.closeEntry()
                     entry = zipIn.nextEntry
                 }
             }
-            tempZipFile.delete()
 
             if (manifestJson == null) {
                 return@withContext Result.failure(IllegalArgumentException("Formato de backup inválido."))
@@ -264,82 +264,85 @@ class BackupManager(private val context: Context) {
 
             val db = AppDatabase.getInstance(context)
 
-            if (replaceExisting) {
-                db.workDao().clearAllCrossRefs()
-                db.workDao().clearAllWorks()
-                db.collectionDao().clearAllCollections()
-            }
-
-            // Restore collections and keep map of oldId -> newId
-            val collectionIdMap = mutableMapOf<Long, Long>()
-            for (colItem in manifest.collections) {
-                val entity = CollectionEntity(
-                    id = if (replaceExisting) colItem.id else 0L,
-                    name = colItem.name,
-                    createdAt = colItem.createdAt,
-                    orderPosition = colItem.orderPosition
-                )
-                val newId = db.collectionDao().insertCollection(entity)
-                collectionIdMap[colItem.id] = newId
-            }
-
-            // Restore works and keep map of oldId -> newId
-            val workIdMap = mutableMapOf<Long, Long>()
-            for (workItem in manifest.works) {
-                val resolvedCoverUri = when {
-                    workItem.coverFileName != null && extractedCovers.containsKey(workItem.coverFileName) -> {
-                        extractedCovers[workItem.coverFileName]
-                    }
-                    else -> workItem.coverUri
+            db.withTransaction {
+                if (replaceExisting) {
+                    db.workDao().clearAllCrossRefs()
+                    db.workDao().clearAllWorks()
+                    db.collectionDao().clearAllCollections()
                 }
-
-                // Handle backward compatibility for v1 backups without totalSource/limitReleased
-                val resolvedTotalSource = if (workItem.totalSource.isNotBlank()) {
-                    workItem.totalSource
-                } else if (workItem.externalSource == "MangaDex" && workItem.totalChapters != null) {
-                    "MANGADEX"
-                } else {
-                    "MANUAL"
-                }
-
-                val workEntity = WorkEntity(
-                    id = if (replaceExisting) workItem.id else 0L,
-                    title = workItem.title,
-                    coverUri = resolvedCoverUri,
-                    authors = workItem.authors,
-                    artists = workItem.artists,
-                    type = workItem.type,
-                    genres = workItem.genres,
-                    chaptersRead = workItem.chaptersRead,
-                    totalChapters = workItem.totalChapters,
-                    synopsis = workItem.synopsis,
-                    personalNotes = workItem.personalNotes,
-                    rating = workItem.rating,
-                    externalId = workItem.externalId,
-                    externalSource = workItem.externalSource,
-                    totalSource = resolvedTotalSource,
-                    limitReleased = workItem.limitReleased,
-                    hiddenFromAll = workItem.hiddenFromAll,
-                    isAdult = workItem.isAdult,
-                    createdAt = workItem.createdAt,
-                    updatedAt = workItem.updatedAt
-                )
-
-                val newWorkId = db.workDao().insertWork(workEntity)
-                workIdMap[workItem.id] = newWorkId
-            }
-
-            // Restore cross refs
-            for (ref in manifest.crossRefs) {
-                val actualWorkId = if (replaceExisting) ref.workId else workIdMap[ref.workId]
-                val actualColId = if (replaceExisting) ref.collectionId else collectionIdMap[ref.collectionId]
-
-                if (actualWorkId != null && actualColId != null) {
-                    db.workDao().insertCrossRef(
-                        WorkCollectionCrossRef(workId = actualWorkId, collectionId = actualColId)
+    
+                // Restore collections and keep map of oldId -> newId
+                val collectionIdMap = mutableMapOf<Long, Long>()
+                for (colItem in manifest.collections) {
+                    val entity = CollectionEntity(
+                        id = if (replaceExisting) colItem.id else 0L,
+                        name = colItem.name,
+                        createdAt = colItem.createdAt,
+                        orderPosition = colItem.orderPosition
                     )
+                    val newId = db.collectionDao().insertCollection(entity)
+                    collectionIdMap[colItem.id] = newId
+                }
+    
+                // Restore works and keep map of oldId -> newId
+                val workIdMap = mutableMapOf<Long, Long>()
+                for (workItem in manifest.works) {
+                    val resolvedCoverUri = when {
+                        workItem.coverFileName != null && extractedCovers.containsKey(workItem.coverFileName) -> {
+                            extractedCovers[workItem.coverFileName]
+                        }
+                        else -> workItem.coverUri
+                    }
+    
+                    // Handle backward compatibility for v1 backups without totalSource/limitReleased
+                    val resolvedTotalSource = if (workItem.totalSource.isNotBlank()) {
+                        workItem.totalSource
+                    } else if (workItem.externalSource == "MangaDex" && workItem.totalChapters != null) {
+                        "MANGADEX"
+                    } else {
+                        "MANUAL"
+                    }
+    
+                    val workEntity = WorkEntity(
+                        id = if (replaceExisting) workItem.id else 0L,
+                        title = workItem.title,
+                        coverUri = resolvedCoverUri,
+                        authors = workItem.authors,
+                        artists = workItem.artists,
+                        type = workItem.type,
+                        genres = workItem.genres,
+                        chaptersRead = workItem.chaptersRead,
+                        totalChapters = workItem.totalChapters,
+                        synopsis = workItem.synopsis,
+                        personalNotes = workItem.personalNotes,
+                        rating = workItem.rating,
+                        externalId = workItem.externalId,
+                        externalSource = workItem.externalSource,
+                        totalSource = resolvedTotalSource,
+                        limitReleased = workItem.limitReleased,
+                        hiddenFromAll = workItem.hiddenFromAll,
+                        isAdult = workItem.isAdult,
+                        createdAt = workItem.createdAt,
+                        updatedAt = workItem.updatedAt
+                    )
+    
+                    val newWorkId = db.workDao().insertWork(workEntity)
+                    workIdMap[workItem.id] = newWorkId
+                }
+    
+                // Restore cross refs
+                for (ref in manifest.crossRefs) {
+                    val actualWorkId = if (replaceExisting) ref.workId else workIdMap[ref.workId]
+                    val actualColId = if (replaceExisting) ref.collectionId else collectionIdMap[ref.collectionId]
+    
+                    if (actualWorkId != null && actualColId != null) {
+                        db.workDao().insertCrossRef(
+                            WorkCollectionCrossRef(workId = actualWorkId, collectionId = actualColId)
+                        )
+                    }
                 }
             }
+            committed = true
 
             if (manifest.allCollectionName.isNotBlank() || replaceExisting) {
                 val prefRepo = com.joano.seoga.data.preferences.UserPreferencesRepository(context)
@@ -349,6 +352,8 @@ class BackupManager(private val context: Context) {
             Result.success(manifest.works.size)
         } catch (e: Exception) {
             Result.failure(e)
+        } finally {
+            if (!committed) newCovers.forEach { it.delete() }
         }
     }
 }
