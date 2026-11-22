@@ -46,7 +46,7 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
 
       - name: Build signed update
-        if: github.event_name == 'workflow_dispatch' && inputs.signed_release
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.signed_release)
         env:
           KEYSTORE_BASE64: ${{ secrets.SEOGA_KEYSTORE_BASE64 }}
           KEYSTORE_PATH: ${{ runner.temp }}/seoga-release.jks
@@ -63,8 +63,10 @@ jobs:
           trap 'rm -f "$KEYSTORE_PATH"' EXIT
           printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
           bash gradlew --no-daemon :app:assembleRelease
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs app/build/outputs/apk/release/*.apk | tee "$RUNNER_TEMP/seoga-cert.txt"
+          grep -qi 'c4e2b520c8e8187497931b38607a1819c5aa2e63fe84e58ac965436411dad52c' "$RUNNER_TEMP/seoga-cert.txt"
       - uses: actions/upload-artifact@v4
-        if: github.event_name == 'workflow_dispatch' && inputs.signed_release
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.signed_release)
         with:
           name: seoga-signed-update
           path: app/build/outputs/apk/release/*.apk
