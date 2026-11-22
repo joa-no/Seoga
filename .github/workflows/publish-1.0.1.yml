@@ -1,0 +1,29 @@
+name: Publish Seoga 1.0.1
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-1.0.1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: seoga-signed-update
+          run-id: 45066276546
+          github-token: ${{ github.token }}
+          path: release-apk
+      - name: Publish tested APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -eu
+          apk="$(find release-apk -name '*.apk' -type f)"
+          test -f "$apk"
+          cp "$apk" Seoga-1.0.1.apk
+          gh release create v1.0.1 Seoga-1.0.1.apk --target 35215cf99f7621be8ad4d60528a4642d031b6dda --title "Seoga 1.0.1" --notes "Maintenance update: removed the redundant library add button, improved backup restoration safety and database transactions, added cover download timeouts and automated validation. Signed with the original release key."
