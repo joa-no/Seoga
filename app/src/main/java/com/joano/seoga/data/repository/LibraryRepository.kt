@@ -217,8 +217,11 @@ class LibraryRepository(
             val fileName = "cover_${UUID.randomUUID()}.jpg"
             val destFile = File(coversDir, fileName)
 
-            val url = URL(imageUrl)
-            url.openStream().use { input ->
+            val connection = URL(imageUrl).openConnection().apply {
+                connectTimeout = 15_000
+                readTimeout = 30_000
+            }
+            connection.getInputStream().use { input ->
                 FileOutputStream(destFile).use { output ->
                     input.copyTo(output)
                 }
