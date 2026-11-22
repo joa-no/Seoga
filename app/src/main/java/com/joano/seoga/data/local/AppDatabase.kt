@@ -34,7 +34,7 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
         WorkCollectionCrossRef::class
     ],
     version = 4,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
 
