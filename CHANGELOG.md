@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.0.1](https://github.com/joa-no/Seoga/releases/tag/v1.0.1) — 2026-11-22
+
+Maintenance update.
+
+- Removed the redundant library add button.
+- Improved backup restoration safety and database transactions.
+- Added cover download timeouts and automated validation.
+- Signed with the original release key.
+
+[Download Seoga v1.0.1 for Android (APK)](https://github.com/joa-no/Seoga/releases/download/v1.0.1/Seoga-1.0.1.apk)
+
 ## [v1.0](https://github.com/joa-no/Seoga/releases/tag/v1.0) — 2026-11-14
 
 Initial public Android release of **Seoga**, an offline-first library manager for manga, manhwa, manhua, and comics.

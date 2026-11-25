@@ -10,15 +10,15 @@ An offline-first Android app to catalog manga, manhwa, manhua, and comics. Organ
 
 <p>
   <img src="https://img.shields.io/badge/Android-7.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android 7.0+" />
-  <img src="https://img.shields.io/badge/Version-1.0-7875F8?style=for-the-badge&labelColor=242436" alt="Version 1.0" />
+  <img src="https://img.shields.io/badge/Version-1.0.1-7875F8?style=for-the-badge&labelColor=242436" alt="Version 1.0.1" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-7875F8?style=for-the-badge&labelColor=242436" alt="MIT License" /></a>
 </p>
 
-<a href="https://github.com/joa-no/Seoga/releases/download/v1.0/Seoga.apk">
+<a href="https://github.com/joa-no/Seoga/releases/download/v1.0.1/Seoga-1.0.1.apk">
   <img src="https://img.shields.io/badge/DOWNLOAD-APK-7875F8?style=for-the-badge&logo=android&logoColor=white&labelColor=242436" alt="Download Seoga APK" height="44" />
 </a>
 &nbsp;
-<a href="https://github.com/joa-no/Seoga/releases/tag/v1.0">
+<a href="https://github.com/joa-no/Seoga/releases/tag/v1.0.1">
   <img src="https://img.shields.io/badge/RELEASE-NOTES-242436?style=for-the-badge&labelColor=38384B" alt="View release notes" height="44" />
 </a>
 
@@ -78,7 +78,7 @@ The app is designed to work **offline without an account**. You can add entries 
 
 ## Installation
 
-1. Download the [**Seoga v1.0 APK**](https://github.com/joa-no/Seoga/releases/download/v1.0/Seoga.apk) from the [official release](https://github.com/joa-no/Seoga/releases/tag/v1.0).
+1. Download the [**Seoga v1.0.1 APK**](https://github.com/joa-no/Seoga/releases/download/v1.0.1/Seoga-1.0.1.apk) from the [official release](https://github.com/joa-no/Seoga/releases/tag/v1.0.1).
 2. Open the downloaded APK on your Android phone or tablet.
 3. If Android prompts you, allow installation from your browser or file manager, then follow the on-screen instructions.
 
@@ -121,7 +121,7 @@ On Windows, run `gradlew.bat assembleDebug`.
 
 **Signing:** The project's debug build configuration expects a local `debug.keystore` at the repository root (alias `androiddebugkey`, store and key passwords `android`). This file is excluded from version control, so provide your own key when building locally.
 
-For details on the initial release, see the [changelog](CHANGELOG.md).
+For release history, see the [changelog](CHANGELOG.md).
 
 ## License & credits
 
